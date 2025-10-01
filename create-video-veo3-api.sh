@@ -67,6 +67,9 @@ echo "Starting video generation..."
 echo "Prompt: ${PROMPT}"
 echo "Output file: ${OUTPUT_FILE}"
 
+# Record start time
+START_TIME=$(date +%s)
+
 # Escape the prompt for JSON (handle quotes and newlines)
 ESCAPED_PROMPT=$(echo "$PROMPT" | jq -Rs .)
 
@@ -118,7 +121,15 @@ while true; do
     curl -L -o "${OUTPUT_FILE}" -H "x-goog-api-key: $GEMINI_API_KEY" "${video_uri}"
 
     if [ $? -eq 0 ]; then
+        # Calculate elapsed time
+        END_TIME=$(date +%s)
+        ELAPSED_SECONDS=$((END_TIME - START_TIME))
+        
+        echo ""
+        echo "=================================="
         echo "Video successfully saved to: ${OUTPUT_FILE}"
+        echo "Time taken: ${ELAPSED_SECONDS} seconds"
+        echo "=================================="
     else
         echo "Error: Failed to download video"
         exit 1
